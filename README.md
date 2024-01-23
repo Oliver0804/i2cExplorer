@@ -23,6 +23,10 @@ Execute the following commands through your serial terminal:
 - `exit`: Disconnect from the current I2C device.
 - `help`: Display available commands based on the connection status.
 ```
+#### scana
+![./pic/scana.png](./pic/scana.png)
+#### c 0x68 and r 0x75
+![./pic/c68.png](./pic/c68.png)
 
 ## Monitoring Interval
 For the m command, the interval is optional (default is 500ms). The maximum allowed interval is 3000ms.
