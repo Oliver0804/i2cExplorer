@@ -3,6 +3,14 @@
 ## Introduction
 i2cExplorer is a powerful tool designed for exploring I2C devices on the bus using the RP2040 as the MCU within the Arduino framework. It allows users to interact with I2C devices via a serial interface, providing capabilities for scanning, reading, and writing I2C registers.
 
+## Hardware Setup
+![./pic/Connection.png](./pic/Connection.png)
+
+Connect any I2C device to your RP2040, using the following pins:
+- SDA (Serial Data Line): Connect to GP0 on the Pico.
+- SCL (Serial Clock Line): Connect to GP1 on the Pico.
+Ensure that your I2C devices are compatible with the RP2040's voltage levels and properly powered.
+
 ## Features
 - I2C Bus Scanning: Detect all I2C devices connected to the RP2040.
 - Read I2C Registers: Read values from specified registers of the connected I2C devices.
