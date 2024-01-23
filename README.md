@@ -1,4 +1,5 @@
 # i2cExplorer
+![./pic/demo.png](./pic/demo.png)
 ## Introduction
 i2cExplorer is a powerful tool designed for exploring I2C devices on the bus using the RP2040 as the MCU within the Arduino framework. It allows users to interact with I2C devices via a serial interface, providing capabilities for scanning, reading, and writing I2C registers.
 
