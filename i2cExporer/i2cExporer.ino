@@ -1,13 +1,18 @@
 #include <Wire.h>
 int connectedI2CAddress = -1;
-
+#define PICO_ONBORAD_LED 25
 void setup() {
   Serial.begin(230400);
 
   Wire.setSDA(0);
   Wire.setSCL(1);
   Wire.begin();
+
+  pinMode(PICO_ONBORAD_LED, OUTPUT);
+
   while (!Serial) continue;
+  digitalWrite(PICO_ONBORAD_LED, HIGH);
+
   Serial.println("  _____ ___   _____ ______");
   Serial.println(" |_   _|__ \\ / ____|  ____|");
   Serial.println("   | |    ) | |    | |__  __  ___ __   ___  _ __ ___ _ __ ");
@@ -18,11 +23,16 @@ void setup() {
   Serial.println("                               |_|  Github : Oliver0804 ");
   showHelp(connectedI2CAddress != -1);
   showHelp(connectedI2CAddress != 1);
+  digitalWrite(PICO_ONBORAD_LED, LOW);
+
   Serial.print("> ");
-  
+
+
 }
 void loop() {
   if (Serial.available()) {
+    digitalWrite(PICO_ONBORAD_LED, HIGH);
+
     String command = Serial.readStringUntil('\n');
     command.trim();
 
@@ -66,6 +76,8 @@ void loop() {
       Serial.print("> ");
     }
   }
+  digitalWrite(PICO_ONBORAD_LED, LOW);
+
 }
 
 void showHelp(bool isConnected) {
@@ -88,7 +100,7 @@ void showHelp(bool isConnected) {
 
 void scanAddresses() {
   Serial.println("Scanning for I2C devices...");
-  Serial.println("   0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
+  Serial.println("    0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
   byte error, address;
 
   for (int row = 0; row < 8; ++row) {
@@ -100,6 +112,8 @@ void scanAddresses() {
     }
 
     for (int col = 0; col < 16; ++col) {
+      digitalWrite(PICO_ONBORAD_LED, HIGH);
+
       address = row * 16 + col;
 
       if (address < 3 || address > 0x77) {
@@ -120,6 +134,8 @@ void scanAddresses() {
       }
       Serial.print(" ");
     }
+    digitalWrite(PICO_ONBORAD_LED, LOW);
+
     Serial.println();
   }
 }
@@ -176,7 +192,7 @@ void writeRegister(String command) {
 
 
 void scanRegisters(String command) {
-  int address = strtol(&command.c_str()[5], NULL, 16); 
+  int address = strtol(&command.c_str()[5], NULL, 16);
 
   Serial.print("Scanning registers for device at 0x");
   Serial.println(address, HEX);
@@ -187,7 +203,7 @@ void scanRegisters(String command) {
     return;
   }
 
-  
+
   for (unsigned int reg = 0; reg <= 0xFF; reg++) {
     Wire.beginTransmission(address);
     Wire.write(reg);
@@ -195,13 +211,17 @@ void scanRegisters(String command) {
       continue;
     }
 
-    Wire.requestFrom(address, 1); 
+    Wire.requestFrom(address, 1);
     if (Wire.available()) {
+      digitalWrite(PICO_ONBORAD_LED, HIGH);
+
       byte data = Wire.read();
       Serial.print("0x");
       Serial.print(reg, HEX);
       Serial.print(": 0x");
       Serial.println(data, HEX);
+      digitalWrite(PICO_ONBORAD_LED, LOW);
+
     } else {
 
       break;
@@ -221,7 +241,7 @@ void monitorRegister(String command) {
   index = command.indexOf(' ', index + 1);
   long interval = (index == -1) ? 500 : strtol(&command.c_str()[index + 1], NULL, 10);
   interval = constrain(interval, 1, 3000); //max 3000ms
-  
+
   Serial.print("Monitoring register 0x");
   Serial.print(reg, HEX);
   Serial.print(" on device 0x");
