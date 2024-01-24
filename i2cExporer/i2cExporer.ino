@@ -1,6 +1,19 @@
 #include <Wire.h>
+#include <U8g2lib.h>
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2, /* reset=*/ U8X8_PIN_NONE);
+
+#define imgWidth 128
+#define imgHeight 64 
+
+
 int connectedI2CAddress = -1;
 #define PICO_ONBORAD_LED 25
+
+#define MAX_I2C_DEVICES 128
+byte foundAddresses[MAX_I2C_DEVICES];
+int foundCount = 0;
+
+
 void setup() {
   Serial.begin(230400);
 
@@ -27,9 +40,15 @@ void setup() {
 
   Serial.print("> ");
 
+  
+  u8g2.begin();  
+  u8g2.setFont(u8g2_font_HelvetiPixelOutline_te); //設定字型
 
 }
+int shfitX=0;
 void loop() {
+    displayI2CAddresses();
+
   if (Serial.available()) {
     digitalWrite(PICO_ONBORAD_LED, HIGH);
 
@@ -97,11 +116,39 @@ void showHelp(bool isConnected) {
   }
 }
 
+void displayI2CAddresses() {
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_HelvetiPixelOutline_te); // 设置字体
+    u8g2.drawStr(shfitX, 12, "I2CExporer");  // 滚动文字
+    u8g2.setFont(u8g2_font_ncenB08_tr); // 设置字体
+
+    shfitX++;
+    if(shfitX > 128) shfitX = -100;
+
+    // 显示I2C地址
+    int line = 2; // 行号，从第二行开始显示地址
+    int col = 0;  // 列号
+    for (int i = 0; i < foundCount; i++) {
+      char buf[6];
+      sprintf(buf, "0x%02X", foundAddresses[i]);
+      u8g2.drawStr(30 * col + 2, 12 * line + 10, buf); // 显示I2C地址
+
+      col++;
+      if (col > 5) { // 控制每行显示的地址数量
+        col = 0;
+        line++;
+      }
+    }
+  } while (u8g2.nextPage());
+}
 
 void scanAddresses() {
   Serial.println("Scanning for I2C devices...");
   Serial.println("    0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
   byte error, address;
+
+  foundCount = 0; // 重置找到的设备数量
 
   for (int row = 0; row < 8; ++row) {
     if (row == 0) {
@@ -129,6 +176,7 @@ void scanAddresses() {
           Serial.print("0");
         }
         Serial.print(address, HEX);
+        foundAddresses[foundCount++] = address; // 保存找到的地址
       } else {
         Serial.print("--");
       }
@@ -139,6 +187,7 @@ void scanAddresses() {
     Serial.println();
   }
 }
+
 void connectI2C(String command) {
   int address = strtol(&command.c_str()[2], NULL, 16);
   Wire.beginTransmission(address);
