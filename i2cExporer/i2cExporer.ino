@@ -1,17 +1,27 @@
 /*
- * https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
- */
+   https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+*/
 #include <Wire.h>
-#include <U8g2lib.h>
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2, /* reset=*/ U8X8_PIN_NONE);
 
-#define imgWidth 128
-#define imgHeight 64 
+#include <Adafruit_GFX.h>
+#include <Adafruit_ST7789.h>
+#define TFT_CS -1
+#define TFT_DC 1
+#define TFT_RST 0
+
+
+// 例如，使用SPI通信
+Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 
 int connectedI2CAddress = -1;
-#define PICO_ONBORAD_LED 25
-
+#define PICO_ONBORAD_LED 4
+#define PICO_ONBORAD_BTN_A 6
+#define PICO_ONBORAD_BTN_B 5
+#define PICO_ONBORAD_BTN_START 7
+#define PICO_ONBORAD_BTN_SELECT 8
+#define PICO_ONBORAD_SDA 12
+#define PICO_ONBORAD_SCL 13
 #define MAX_I2C_DEVICES 128
 byte foundAddresses[MAX_I2C_DEVICES];
 int foundCount = 0;
@@ -19,14 +29,21 @@ int foundCount = 0;
 
 void setup() {
   Serial.begin(230400);
-
-  Wire.setSDA(0);
-  Wire.setSCL(1);
-  Wire.begin();
-
-  pinMode(PICO_ONBORAD_LED, OUTPUT);
-
   while (!Serial) continue;
+
+  Wire.setSDA(PICO_ONBORAD_SDA);
+  Wire.setSCL(PICO_ONBORAD_SCL);
+  //Wire1.setSDA(16);
+  //Wire1.setSCL(18);
+  Wire.begin();
+  //Wire1.begin();
+  pinMode(PICO_ONBORAD_LED, OUTPUT);
+  pinMode(PICO_ONBORAD_BTN_A, INPUT_PULLUP);
+  pinMode(PICO_ONBORAD_BTN_B, INPUT_PULLUP);
+  pinMode(PICO_ONBORAD_BTN_START, INPUT_PULLUP);
+  pinMode(PICO_ONBORAD_BTN_SELECT, INPUT_PULLUP);
+
+
   digitalWrite(PICO_ONBORAD_LED, HIGH);
 
   Serial.println("  _____ ___   _____ ______");
@@ -43,15 +60,22 @@ void setup() {
 
   Serial.print("> ");
 
-  
-  u8g2.begin();  
-  u8g2.setFont(u8g2_font_HelvetiPixelOutline_te); //設定字型
+  tft.init(240, 240);  // 例如，初始化240x240分辨率的显示器
+  tft.fillScreen(ST77XX_BLACK); // 清屏
 
 }
-int shfitX=0;
+int shfitX = 0;
 void loop() {
-    displayI2CAddresses();
+  displayI2CAddresses();
+  if (digitalRead(PICO_ONBORAD_BTN_A) == LOW) {
+    // 如果按钮A被按下，执行I2C扫描
+    scanAddresses();
+    delay(500); // 简单的防抖动延迟
+  }
+  cmdParse();
 
+}
+void cmdParse() {
   if (Serial.available()) {
     digitalWrite(PICO_ONBORAD_LED, HIGH);
 
@@ -99,9 +123,7 @@ void loop() {
     }
   }
   digitalWrite(PICO_ONBORAD_LED, LOW);
-
 }
-
 void showHelp(bool isConnected) {
   if (isConnected) {
     Serial.println("");
@@ -120,30 +142,11 @@ void showHelp(bool isConnected) {
 }
 
 void displayI2CAddresses() {
-  u8g2.firstPage();
-  do {
-    u8g2.setFont(u8g2_font_HelvetiPixelOutline_te); // 设置字体
-    u8g2.drawStr(shfitX, 12, "I2CExporer");  // 滚动文字
-    u8g2.setFont(u8g2_font_ncenB08_tr); // 设置字体
+  tft.setTextSize(1);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setCursor(0, 0);
+  tft.print("Hello, World!");
 
-    shfitX++;
-    if(shfitX > 128) shfitX = -100;
-
-    // 显示I2C地址
-    int line = 2; // 行号，从第二行开始显示地址
-    int col = 0;  // 列号
-    for (int i = 0; i < foundCount; i++) {
-      char buf[6];
-      sprintf(buf, "0x%02X", foundAddresses[i]);
-      u8g2.drawStr(30 * col + 2, 12 * line + 10, buf); // 显示I2C地址
-
-      col++;
-      if (col > 5) { // 控制每行显示的地址数量
-        col = 0;
-        line++;
-      }
-    }
-  } while (u8g2.nextPage());
 }
 
 void scanAddresses() {
