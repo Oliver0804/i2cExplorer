@@ -31,11 +31,11 @@ void setup() {
 
   Serial.println("  _____ ___   _____ ______");
   Serial.println(" |_   _|__ \\ / ____|  ____|");
-  Serial.println("   | |    ) | |    | |__  __  ___ __   ___  _ __ ___ _ __ ");
+  Serial.println("   | |    ) | |    | |__  __  ___ __   ___  _ __ ___ _ __");
   Serial.println("   | |   / /| |    |  __| \\ \\/ / '_ \\ / _ \\| '__/ _ \\ '__|");
-  Serial.println("  _| |_ / /_| |____| |____ >  <| |_) | (_) | | |  __/ |   ");
-  Serial.println(" |_____|____|\\_____|______/_/\\_\\ .__/ \\___/|_|  \\___|_|   ");
-  Serial.println("                               | |                        ");
+  Serial.println("  _| |_ / /_| |____| |____ >  <| |_) | (_) | | |  __/ |");
+  Serial.println(" |_____|____|\\_____|______/_/\\_\\ .__/ \\___/|_|  \\___|_|");
+  Serial.println("                               | |");
   Serial.println("                               |_|  Github : Oliver0804 ");
   showHelp(connectedI2CAddress != -1);
   showHelp(connectedI2CAddress != 1);
