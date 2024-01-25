@@ -66,8 +66,48 @@ void gfxShowLogo() {
     gfx->println(lines[i]);
   }
 }
-
 void rotatePoint() {
+  static int oldX = 0;
+  static int oldY = 0;
+  static int oldFadeX = 0;
+  static int oldFadeY = 0;
+  unsigned long currentTime = millis();
+  
+  float elapsed = currentTime - startTime;
+
+  // 根据经过的时间计算旋转角度
+  float angle = elapsed * rotationSpeed;
+  angle = fmod(angle, TWO_PI); // 保持角度在0到2π之间
+
+  // 计算点的新位置
+  int x = centerX + radius * cos(angle);
+  int y = centerY + radius * sin(angle);
+
+  // 清除旧点和绘制新点的逻辑保持不变...
+  gfx->fillCircle(oldX, oldY, 2, 0x0000); // 使用背景颜色覆盖旧点
+  for (float t = 0; t < 1; t += 0.1) {
+    oldFadeX = centerX + radius * cos(angle - t);
+    oldFadeY = centerY + radius * sin(angle - t);
+    gfx->fillCircle(oldFadeX, oldFadeY, 1, 0x0000); // 清除拖尾
+  }
+
+  // 绘制新的旋转点
+  gfx->fillCircle(x, y, 1, 0x07E0); // 绘制绿色点，点半径为2
+
+  // 绘制拖尾效果
+  for (float t = 0; t < 1; t += 0.1) {
+    int fadeX = centerX + radius * cos(angle - t);
+    int fadeY = centerY + radius * sin(angle - t);
+    uint16_t fadeColor = gfx->color565(0, 255 * (1 - t), 0); // 颜色逐渐减淡
+    gfx->fillCircle(fadeX, fadeY, 1, fadeColor);
+  }
+
+
+  // 更新旧点位置
+  oldX = x;
+  oldY = y;
+}
+void rotatePoint_old() {
   static int oldX = 0;
   static int oldY = 0;
   static int oldFadeX = 0;

@@ -24,6 +24,7 @@ float radius = 118.0; // 旋转半径
 int centerX = gfx->width() / 2; // 圆心X坐标
 int centerY = gfx->height() / 2; // 圆心Y坐标
 float speed = 0.02; // 旋转速度
+float rotationSpeed = 0.003; // 旋转速度，每毫秒旋转的弧度数
 
 
 const int ledPin = 16; // 使用GP16引脚
@@ -31,6 +32,7 @@ unsigned long startTime = millis(); // 记录开始时间
 const int interval = 1500; // 完整呼吸周期（毫秒）
 const int lowerLimit = 20;  // 亮度下限
 const int upperLimit = 250; // 亮度上限
+
 
 void setup() {
   Serial.begin(230400);
@@ -44,6 +46,7 @@ void setup() {
   pinMode(PICO_ONBORAD_BTN, INPUT_PULLUP);
   digitalWrite(PICO_ONBORAD_LED, HIGH);
   pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
 
   Serial.println("  _____ ___   _____ ______");
   Serial.println(" |_   _|__ \\ / ____|  ____|");
@@ -60,9 +63,14 @@ void setup() {
   Serial.print("> ");
 
 }
+
+
 void loop() {
-  breathLED();
   readBTN();
+
+
+  breathLED();
+
   rotatePoint();
   cmdParse();
 }
