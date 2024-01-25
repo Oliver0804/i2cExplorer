@@ -21,6 +21,31 @@ int connectedI2CAddress = -1;
 byte foundAddresses[MAX_I2C_DEVICES];
 int foundCount = 0;
 
+float angle = 0.0; // 旋转角度
+float radius = 118.0; // 旋转半径
+int centerX = gfx->width() / 2; // 圆心X坐标
+int centerY = gfx->height() / 2; // 圆心Y坐标
+float speed = 0.02; // 旋转速度
+
+
+const int ledPin = 16; // 使用GP16引脚
+unsigned long startTime = millis(); // 记录开始时间
+const int interval = 1500; // 完整呼吸周期（毫秒）
+const int lowerLimit = 20;  // 亮度下限
+const int upperLimit = 250; // 亮度上限
+
+void breathLED() {
+  unsigned long currentTime = millis();
+  float elapsed = (currentTime - startTime) % interval; // 计算经过时间的一部分
+  float phase = (elapsed / interval) * TWO_PI; // 将时间映射到0到2π之间
+
+  // 使用正弦波调整亮度
+  float brightness = (sin(phase) + 1) / 2; // 将正弦波结果从-1~1映射到0~1
+  brightness = lowerLimit + brightness * (upperLimit - lowerLimit); // 映射到亮度范围
+
+  analogWrite(ledPin, int(brightness));
+}
+
 void gfxInit() {
   Serial.println("Arduino_GFX Hello World example");
 
@@ -77,7 +102,45 @@ void gfxShowLogo() {
   }
 }
 
+void rotatePoint() {
+  static int oldX = 0;
+  static int oldY = 0;
+  static int oldFadeX = 0;
+  static int oldFadeY = 0;
 
+  // 更新角度
+  angle += speed;
+  if (angle > 2 * PI) {
+    angle -= 2 * PI;
+  }
+
+  // 计算点的新位置
+  int x = centerX + radius * cos(angle);
+  int y = centerY + radius * sin(angle);
+
+  // 清除旧点
+  gfx->fillCircle(oldX, oldY, 2, 0x0000); // 使用背景颜色覆盖旧点
+  for (float t = 0; t < 1; t += 0.1) {
+    oldFadeX = centerX + radius * cos(angle - t);
+    oldFadeY = centerY + radius * sin(angle - t);
+    gfx->fillCircle(oldFadeX, oldFadeY, 1, 0x0000); // 清除拖尾
+  }
+
+  // 绘制新的旋转点
+  gfx->fillCircle(x, y, 1, 0x07E0); // 绘制绿色点，点半径为2
+
+  // 绘制拖尾效果
+  for (float t = 0; t < 1; t += 0.1) {
+    int fadeX = centerX + radius * cos(angle - t);
+    int fadeY = centerY + radius * sin(angle - t);
+    uint16_t fadeColor = gfx->color565(0, 255 * (1 - t), 0); // 颜色逐渐减淡
+    gfx->fillCircle(fadeX, fadeY, 1, fadeColor);
+  }
+
+  // 更新旧点位置
+  oldX = x;
+  oldY = y;
+}
 
 void gfxTest() {
   gfx->setCursor(random(gfx->width()), random(gfx->height()));
@@ -107,7 +170,7 @@ void gfxShowi2c(){
   }
 void setup() {
   Serial.begin(230400);
-  while (!Serial) continue;
+  //while (!Serial) continue;
   gfxInit();
   gfxShowLogo();
   Wire1.setSDA(2);
@@ -116,6 +179,7 @@ void setup() {
   pinMode(PICO_ONBORAD_LED, OUTPUT);
   pinMode(PICO_ONBORAD_BTN, INPUT_PULLUP);
   digitalWrite(PICO_ONBORAD_LED, HIGH);
+  pinMode(ledPin, OUTPUT);
 
   Serial.println("  _____ ___   _____ ______");
   Serial.println(" |_   _|__ \\ / ____|  ____|");
@@ -137,7 +201,9 @@ void loop() {
   //displayI2CAddresses();
   //gfxShowi2c();
   //gfxTest();
+  breathLED();
   readBTN();
+  rotatePoint();
   cmdParse();
 
 }
