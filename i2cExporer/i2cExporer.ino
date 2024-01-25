@@ -3,47 +3,118 @@
 */
 #include <Wire.h>
 
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7789.h>
-#define TFT_CS -1
-#define TFT_DC 1
-#define TFT_RST 0
 
+#include <Arduino_GFX_Library.h>
+#define GFX_BL DF_GFX_BL // default backlight pin, you may replace DF_GFX_BL to actual backlight pin
 
-// 例如，使用SPI通信
-Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
+Arduino_DataBus *bus = new Arduino_SWSPI(8 /* DC */, 9 /* CS */, 10 /* SCK */, 11 /* MOSI */, -1 /* MISO */);
+Arduino_GFX *gfx = new Arduino_GC9A01(bus, 12 /* RST */, 0 /* rotation */, true /* IPS */);
 
 
 int connectedI2CAddress = -1;
-#define PICO_ONBORAD_LED 4
-#define PICO_ONBORAD_BTN_A 6
-#define PICO_ONBORAD_BTN_B 5
-#define PICO_ONBORAD_BTN_START 7
-#define PICO_ONBORAD_BTN_SELECT 8
+#define PICO_ONBORAD_LED 25
 #define PICO_ONBORAD_SDA 12
 #define PICO_ONBORAD_SCL 13
+#define PICO_ONBORAD_BTN 22
 #define MAX_I2C_DEVICES 128
+
 byte foundAddresses[MAX_I2C_DEVICES];
 int foundCount = 0;
 
+void gfxInit() {
+  Serial.println("Arduino_GFX Hello World example");
 
+#ifdef GFX_EXTRA_PRE_INIT
+  GFX_EXTRA_PRE_INIT();
+#endif
+  if (!gfx->begin())
+  {
+    Serial.println("gfx->begin() failed!");
+  }
+  gfx->fillScreen(BLACK);
+
+#ifdef GFX_BL
+  pinMode(GFX_BL, OUTPUT);
+  digitalWrite(GFX_BL, HIGH);
+#endif
+
+  gfx->setCursor(10, 10);
+  gfx->setTextColor(RED);
+  gfx->println("Hello World!");
+  gfx->fillScreen(0x0000); // 清空屏幕
+  delay(500); // 5 seconds
+}
+void gfxShowLogo() {
+  gfx->fillScreen(0x0000);  // 清屏
+  gfx->setTextColor(0x07E0); // 设置文本颜色
+  gfx->setTextSize(1); // 根据需要调整文本大小
+  gfx->setTextWrap(false);  // 关闭文字自动换行
+
+  const char *lines[] = {
+    "        _____ ___   _____              ",
+    "       |_   _|__ \\ / ____|             ",
+    "         | |    ) | |                  ",
+    " ______  | |   / /| |                  ",
+    "|  ____|_| |_ / /_| |____              ",
+    "| |__  |_____|____|\\_____| __ ___ _ __ ",
+    "|  __|  \\ \\/ / '_ \\/ _ \\| '__/ _ \\ '__|",
+    "| |____ >  <| |_) | (_) | | |  __/ |   ",
+    "|______/_/\\_\\ .__/ \\___/|_|  \\___|_|   ",
+    "            | |                        ",
+    "         |_| Github : Oliver0804 "
+  };
+
+  int linesCount = sizeof(lines) / sizeof(lines[0]);
+  int lineSpacing = 8; // 行间距
+  int totalHeight = linesCount * lineSpacing; // 文本块总高度
+  int startY = (gfx->height() - totalHeight) / 2; // 垂直居中
+
+  for (int i = 0; i < linesCount; i++) {
+    int lineLength = strlen(lines[i]) * 6; // 估算每行长度（每个字符宽度假设为6像素）
+    int startX = (gfx->width() - lineLength) / 2; // 水平居中
+    gfx->setCursor(startX, startY + i * lineSpacing);
+    gfx->println(lines[i]);
+  }
+}
+
+
+
+void gfxTest() {
+  gfx->setCursor(random(gfx->width()), random(gfx->height()));
+  gfx->setTextColor(random(0xffff), random(0xffff));
+  gfx->setTextSize(random(6) /* x scale */, random(6) /* y scale */, random(2) /* pixel_margin */);
+  gfx->println("Hello World!");
+}
+void gfxShowi2c(){
+  gfx->fillScreen(0x0000); // 清空屏幕
+  if (foundCount == 0) {
+    // 如果没有找到I2C设备
+    gfx->setTextColor(0x0000, 0xF800); // 黑色字体，红色背景
+    gfx->setTextSize(4);
+    gfx->setCursor(10, (gfx->height() - 28) / 2); // 居中显示
+    gfx->println("Not Found I2C");
+  } else {
+    // 如果找到了I2C设备
+    for (int i = 0; i < foundCount; i++) {
+      gfx->setCursor(random(gfx->width()), random(gfx->height()));
+      gfx->setTextColor(0x07E0,0x0000); // 绿色字体
+      gfx->setTextSize(random(1, 6), random(1, 6), random(2)); // 随机字体大小和间距
+      char buf[6];
+      sprintf(buf, "0x%02X", foundAddresses[i]);
+      gfx->println(buf);
+    }
+  }
+  }
 void setup() {
   Serial.begin(230400);
   while (!Serial) continue;
-
-  Wire.setSDA(PICO_ONBORAD_SDA);
-  Wire.setSCL(PICO_ONBORAD_SCL);
-  //Wire1.setSDA(16);
-  //Wire1.setSCL(18);
-  Wire.begin();
-  //Wire1.begin();
+  gfxInit();
+  gfxShowLogo();
+  Wire1.setSDA(2);
+  Wire1.setSCL(3);
+  Wire1.begin();
   pinMode(PICO_ONBORAD_LED, OUTPUT);
-  pinMode(PICO_ONBORAD_BTN_A, INPUT_PULLUP);
-  pinMode(PICO_ONBORAD_BTN_B, INPUT_PULLUP);
-  pinMode(PICO_ONBORAD_BTN_START, INPUT_PULLUP);
-  pinMode(PICO_ONBORAD_BTN_SELECT, INPUT_PULLUP);
-
-
+  pinMode(PICO_ONBORAD_BTN, INPUT_PULLUP);
   digitalWrite(PICO_ONBORAD_LED, HIGH);
 
   Serial.println("  _____ ___   _____ ______");
@@ -60,21 +131,23 @@ void setup() {
 
   Serial.print("> ");
 
-  tft.init(240, 240);  // 例如，初始化240x240分辨率的显示器
-  tft.fillScreen(ST77XX_BLACK); // 清屏
-
 }
 int shfitX = 0;
 void loop() {
-  displayI2CAddresses();
-  if (digitalRead(PICO_ONBORAD_BTN_A) == LOW) {
+  //displayI2CAddresses();
+  //gfxShowi2c();
+  //gfxTest();
+  readBTN();
+  cmdParse();
+
+}
+void readBTN(){
+    if (digitalRead(PICO_ONBORAD_BTN) == LOW) {
     // 如果按钮A被按下，执行I2C扫描
     scanAddresses();
     delay(500); // 简单的防抖动延迟
   }
-  cmdParse();
-
-}
+  }
 void cmdParse() {
   if (Serial.available()) {
     digitalWrite(PICO_ONBORAD_LED, HIGH);
@@ -141,13 +214,7 @@ void showHelp(bool isConnected) {
   }
 }
 
-void displayI2CAddresses() {
-  tft.setTextSize(1);
-  tft.setTextColor(ST77XX_WHITE);
-  tft.setCursor(0, 0);
-  tft.print("Hello, World!");
 
-}
 
 void scanAddresses() {
   Serial.println("Scanning for I2C devices...");
@@ -174,8 +241,8 @@ void scanAddresses() {
         continue;
       }
 
-      Wire.beginTransmission(address);
-      error = Wire.endTransmission();
+      Wire1.beginTransmission(address);
+      error = Wire1.endTransmission();
 
       if (error == 0) {
         if (address < 16) {
@@ -192,12 +259,13 @@ void scanAddresses() {
 
     Serial.println();
   }
+  gfxShowi2c();
 }
 
 void connectI2C(String command) {
   int address = strtol(&command.c_str()[2], NULL, 16);
-  Wire.beginTransmission(address);
-  if (Wire.endTransmission() == 0) {
+  Wire1.beginTransmission(address);
+  if (Wire1.endTransmission() == 0) {
     connectedI2CAddress = address;
     Serial.print("Connected to I2C device at 0x");
     Serial.println(address, HEX);
@@ -208,13 +276,13 @@ void connectI2C(String command) {
 
 void readRegister(String command) {
   int reg = strtol(&command.c_str()[2], NULL, 16);
-  Wire.beginTransmission(connectedI2CAddress);
-  Wire.write(reg);
-  Wire.endTransmission();
+  Wire1.beginTransmission(connectedI2CAddress);
+  Wire1.write(reg);
+  Wire1.endTransmission();
 
-  Wire.requestFrom(connectedI2CAddress, 1);
-  if (Wire.available()) {
-    byte data = Wire.read();
+  Wire1.requestFrom(connectedI2CAddress, 1);
+  if (Wire1.available()) {
+    byte data = Wire1.read();
     Serial.print("Data at 0x");
     Serial.print(reg, HEX);
     Serial.print(": 0x");
@@ -230,10 +298,10 @@ void writeRegister(String command) {
   int nextSpaceIndex = command.indexOf(' ', spaceIndex + 1);
   int data = strtol(&command.c_str()[nextSpaceIndex + 1], NULL, 16);
 
-  Wire.beginTransmission(connectedI2CAddress);
-  Wire.write(reg);  // 寄存器地址
-  Wire.write(data); // 寫數據
-  byte error = Wire.endTransmission();
+  Wire1.beginTransmission(connectedI2CAddress);
+  Wire1.write(reg);  // 寄存器地址
+  Wire1.write(data); // 寫數據
+  byte error = Wire1.endTransmission();
 
   if (error == 0) {
     Serial.print("Data 0x");
@@ -252,25 +320,25 @@ void scanRegisters(String command) {
   Serial.print("Scanning registers for device at 0x");
   Serial.println(address, HEX);
 
-  Wire.beginTransmission(address);
-  if (Wire.endTransmission() != 0) {
+  Wire1.beginTransmission(address);
+  if (Wire1.endTransmission() != 0) {
     Serial.println("Error: Could not connect to I2C device");
     return;
   }
 
 
   for (unsigned int reg = 0; reg <= 0xFF; reg++) {
-    Wire.beginTransmission(address);
-    Wire.write(reg);
-    if (Wire.endTransmission() != 0) {
+    Wire1.beginTransmission(address);
+    Wire1.write(reg);
+    if (Wire1.endTransmission() != 0) {
       continue;
     }
 
-    Wire.requestFrom(address, 1);
-    if (Wire.available()) {
+    Wire1.requestFrom(address, 1);
+    if (Wire1.available()) {
       digitalWrite(PICO_ONBORAD_LED, HIGH);
 
-      byte data = Wire.read();
+      byte data = Wire1.read();
       Serial.print("0x");
       Serial.print(reg, HEX);
       Serial.print(": 0x");
@@ -306,12 +374,12 @@ void monitorRegister(String command) {
   Serial.println(" ms. Enter any character to stop.");
 
   while (!Serial.available()) {
-    Wire.beginTransmission(connectedI2CAddress);
-    Wire.write(reg);
-    Wire.endTransmission();
-    Wire.requestFrom(connectedI2CAddress, 1);
-    if (Wire.available()) {
-      byte data = Wire.read();
+    Wire1.beginTransmission(connectedI2CAddress);
+    Wire1.write(reg);
+    Wire1.endTransmission();
+    Wire1.requestFrom(connectedI2CAddress, 1);
+    if (Wire1.available()) {
+      byte data = Wire1.read();
       //Serial.print("0x");
       //Serial.print(reg, HEX);
       //Serial.print(": 0x");
