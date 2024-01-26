@@ -43,14 +43,13 @@ int sclPin = PICO_ONBORAD_SCL;
 
 void setup() {
   Serial.begin(230400);
-  while (!Serial) continue;
+  //while (!Serial) continue;
   gfxInit();
   gfxShowLogo();
   //Wire1.setSDA(PICO_ONBORAD_SDA);
   //Wire1.setSCL(PICO_ONBORAD_SCL);
   //Wire1.begin();
   softwarei2c.begin(sdaPin, sclPin);       // sda, scl
-  Serial.println("begin to scan...");
 
   pinMode(PICO_ONBORAD_LED, OUTPUT);
   pinMode(PICO_ONBORAD_BTN, INPUT_PULLUP);
@@ -64,7 +63,7 @@ void setup() {
   Serial.println("   | |   / /| |    |  __| \\ \\/ / '_ \\| |/ _ \\| '__/ _ \\ '__|");
   Serial.println("  _| |_ / /_| |____| |____ >  <| |_) | | (_) | | |  __/ |");
   Serial.println(" |_____|____|\\_____|______/_/\\_\\ .__/|_|\\___/|_|  \\___|_|");
-  Serial.println("                               | |");
+  Serial.println("                               | |                 V1.0 ");
   Serial.println("                               |_|  Github : Oliver0804 ");
   showHelp(connectedI2CAddress != -1);
   showHelp(connectedI2CAddress != 1);
