@@ -33,6 +33,9 @@ Ensure that your I2C devices are compatible with the RP2040's voltage levels and
 - Write I2C Registers: Write data to specified registers of the connected I2C devices.
 - Monitor I2C Registers: Continuously read and print values from a specific register at regular intervals.
 - Serial Interface: Communicate with the RP2040 and I2C devices through a serial connection.
+- Swap I2C bus ( SDA & SCL )
+![./pic/swap1.jpeg](./pic/swap1.jpeg)![./pic/swap2.jpeg](./pic/swap2.jpeg)
+
 ## Usage
 ### Command List
 Execute the following commands through your serial terminal:
