@@ -212,8 +212,8 @@ void gfxDisplayI2cPin(int sdaPin, int sclPin) {
   // 显示SDA和SCL，颜色根据引脚号变化
   uint16_t sdaColor = (sdaPin == 2 ? CYAN : MAGENTA);
   uint16_t sclColor = (sclPin == 3 ? MAGENTA : CYAN);
-  uint16_t sdaBgColor = (sdaPin == 2 ? BLACK : 0xFD20);
-  uint16_t sclBgColor = (sclPin == 3 ? 0xFD20 : BLACK);
+  uint16_t sdaBgColor = (sdaPin == 2 ? BLACK : BLACK);
+  uint16_t sclBgColor = (sclPin == 3 ? BLACK : BLACK);
   gfx->setTextColor(sdaColor, sdaBgColor);
   gfx->setCursor(textX, textY + (textYplus * y++));
   gfx->println(sdaPin == 2 ? "SDA" : "SCL");
