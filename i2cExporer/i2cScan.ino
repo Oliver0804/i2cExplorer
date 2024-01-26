@@ -40,13 +40,14 @@ void scanAddresses() {
 
     Serial.println();
   }
+
   gfxShowi2c();
 }
-/*
+
 void connectI2C(String command) {
   int address = strtol(&command.c_str()[2], NULL, 16);
-  scanI2C.beginTransmission(address);
-  if (scanI2C.endTransmission() == 0) {
+  softwarei2c.beginTransmission(address);
+  if (softwarei2c.endTransmission() == 0) {
     connectedI2CAddress = address;
     Serial.print("Connected to I2C device at 0x");
     Serial.println(address, HEX);
@@ -57,20 +58,18 @@ void connectI2C(String command) {
 
 void readRegister(String command) {
   int reg = strtol(&command.c_str()[2], NULL, 16);
-  scanI2C.beginTransmission(connectedI2CAddress);
-  scanI2C.write(reg);
-  scanI2C.endTransmission();
+  softwarei2c.beginTransmission(connectedI2CAddress);
+  softwarei2c.write(reg);
+  softwarei2c.endTransmission();
 
-  scanI2C.requestFrom(connectedI2CAddress, 1);
-  if (scanI2C.available()) {
-    byte data = scanI2C.read();
+  softwarei2c.requestFrom(connectedI2CAddress, 1);
+ 
+    byte data = softwarei2c.read();
     Serial.print("Data at 0x");
     Serial.print(reg, HEX);
     Serial.print(": 0x");
     Serial.println(data, HEX);
-  } else {
-    Serial.println("Error: No data received");
-  }
+
 }
 
 void writeRegister(String command) {
@@ -79,10 +78,10 @@ void writeRegister(String command) {
   int nextSpaceIndex = command.indexOf(' ', spaceIndex + 1);
   int data = strtol(&command.c_str()[nextSpaceIndex + 1], NULL, 16);
 
-  scanI2C.beginTransmission(connectedI2CAddress);
-  scanI2C.write(reg);  // 寄存器地址
-  scanI2C.write(data); // 寫數據
-  byte error = scanI2C.endTransmission();
+  softwarei2c.beginTransmission(connectedI2CAddress);
+  softwarei2c.write(reg);  // 寄存器地址
+  softwarei2c.write(data); // 寫數據
+  byte error = softwarei2c.endTransmission();
 
   if (error == 0) {
     Serial.print("Data 0x");
@@ -101,35 +100,31 @@ void scanRegisters(String command) {
   Serial.print("Scanning registers for device at 0x");
   Serial.println(address, HEX);
 
-  scanI2C.beginTransmission(address);
-  if (scanI2C.endTransmission() != 0) {
+  softwarei2c.beginTransmission(address);
+  if (softwarei2c.endTransmission() != 0) {
     Serial.println("Error: Could not connect to I2C device");
     return;
   }
 
 
   for (unsigned int reg = 0; reg <= 0xFF; reg++) {
-    scanI2C.beginTransmission(address);
-    scanI2C.write(reg);
-    if (scanI2C.endTransmission() != 0) {
+    softwarei2c.beginTransmission(address);
+    softwarei2c.write(reg);
+    if (softwarei2c.endTransmission() != 0) {
       continue;
     }
 
-    scanI2C.requestFrom(address, 1);
-    if (scanI2C.available()) {
-      digitalWrite(PICO_ONBORAD_LED, HIGH);
+    softwarei2c.requestFrom(address, 1);
 
-      byte data = scanI2C.read();
-      Serial.print("0x");
-      Serial.print(reg, HEX);
-      Serial.print(": 0x");
-      Serial.println(data, HEX);
-      digitalWrite(PICO_ONBORAD_LED, LOW);
+    digitalWrite(PICO_ONBORAD_LED, HIGH);
 
-    } else {
+    byte data = softwarei2c.read();
+    Serial.print("0x");
+    Serial.print(reg, HEX);
+    Serial.print(": 0x");
+    Serial.println(data, HEX);
+    digitalWrite(PICO_ONBORAD_LED, LOW);
 
-      break;
-    }
   }
 }
 
@@ -155,17 +150,17 @@ void monitorRegister(String command) {
   Serial.println(" ms. Enter any character to stop.");
 
   while (!Serial.available()) {
-    scanI2C.beginTransmission(connectedI2CAddress);
-    scanI2C.write(reg);
-    scanI2C.endTransmission();
-    scanI2C.requestFrom(connectedI2CAddress, 1);
-    if (scanI2C.available()) {
-      byte data = scanI2C.read();
-      //Serial.print("0x");
-      //Serial.print(reg, HEX);
-      //Serial.print(": 0x");
-      Serial.println(data, HEX);
-    }
+    softwarei2c.beginTransmission(connectedI2CAddress);
+    softwarei2c.write(reg);
+    softwarei2c.endTransmission();
+    softwarei2c.requestFrom(connectedI2CAddress, 1);
+
+    byte data = softwarei2c.read();
+    //Serial.print("0x");
+    //Serial.print(reg, HEX);
+    //Serial.print(": 0x");
+    Serial.println(data, HEX);
+
 
     delay(interval);
 
@@ -178,4 +173,5 @@ void monitorRegister(String command) {
   while (Serial.available()) {
     Serial.read();
   }
-  */
+}
+ 
