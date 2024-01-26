@@ -1,3 +1,17 @@
+void swapI2CPins() {
+  // 交换SDA和SCL引脚
+  int temp = sdaPin;
+  sdaPin = sclPin;
+  sclPin = temp;
+
+  // 重新初始化SoftwareI2C
+  softwarei2c.begin(sdaPin, sclPin); // 使用新的引脚重新初始化
+  Serial.println("swapI2CPins");
+  gfxDisplayI2cPin(sdaPin,sclPin);
+}
+
+
+
 void scanAddresses() {
   Serial.println("Scanning for I2C devices...");
   Serial.println("    0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");

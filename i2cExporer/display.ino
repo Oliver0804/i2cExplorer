@@ -11,9 +11,21 @@ void breathLED() {
   analogWrite(ledPin, int(brightness));
 }
 
-void gfxInit() {
-  Serial.println("Arduino_GFX Hello World example");
+#define BLACK   0x0000
+#define BROWN   0xA145 // 近似棕色
+#define RED     0xF800
+#define ORANGE  0xFD20 // 近似橙色
+#define YELLOW  0xFFE0
+#define GREEN   0x07E0
+#define BLUE    0x001F
+#define PURPLE  0x780F // 近似紫色
+#define GRAY    0x8410 // 近似灰色
+#define WHITE   0xFFFF
+#define CYAN     0x07FF
+#define MAGENTA  0xF81F
 
+void gfxInit() {
+  Serial.println("Arduino_GFX");
 #ifdef GFX_EXTRA_PRE_INIT
   GFX_EXTRA_PRE_INIT();
 #endif
@@ -28,13 +40,10 @@ void gfxInit() {
   digitalWrite(GFX_BL, HIGH);
 #endif
 
-  gfx->setCursor(10, 10);
-  gfx->setTextColor(RED);
-  gfx->println("Hello World!");
-  gfx->fillScreen(0x0000); // 清空屏幕
-  delay(500); // 5 seconds
+
 }
 void gfxShowLogo() {
+  gfx->setRotation(0);
   gfx->fillScreen(0x0000);  // 清屏
   gfx->setTextColor(0x07E0); // 设置文本颜色
   gfx->setTextSize(1); // 根据需要调整文本大小
@@ -57,7 +66,7 @@ void gfxShowLogo() {
   int linesCount = sizeof(lines) / sizeof(lines[0]);
   int lineSpacing = 8; // 行间距
   int totalHeight = linesCount * lineSpacing; // 文本块总高度
-  int startY = (gfx->height() - totalHeight) / 2; // 垂直居中
+  int startY = ((gfx->height() - totalHeight) / 2)-5; // 垂直居中
 
   for (int i = 0; i < linesCount; i++) {
     int lineLength = strlen(lines[i]) * 6; // 估算每行长度（每个字符宽度假设为6像素）
@@ -172,4 +181,43 @@ void gfxShowi2c() {
       gfx->println(buf);
     }
   }
+}
+
+
+void gfxDisplayI2cPin(int sdaPin, int sclPin) {
+  gfxShowLogo() ;
+  //gfx->fillScreen(0x0000); // 清空屏幕
+
+  // 设置文本旋转为90度
+  gfx->setRotation(1);
+  int textX = 190;
+  int textY = 80;
+  int textYplus = 17;
+  int y = 0;
+
+  // 显示VCC和GND
+  gfx->setTextSize(2); // 设置文字大小
+  gfx->setTextColor(RED, GREEN);
+  gfx->setCursor(textX, textY + (textYplus * y++)); // 设置文字位置
+  gfx->println("VCC");
+
+  gfx->setTextColor(BROWN, GREEN);
+  gfx->setCursor(textX, textY + (textYplus * y++));
+  gfx->println("GND");
+
+  // 显示SDA和SCL，颜色根据引脚号变化
+  uint16_t sdaColor = (sdaPin == 2 ? CYAN : MAGENTA);
+  uint16_t sclColor = (sclPin == 3 ? MAGENTA : CYAN);
+  uint16_t sdaBgColor = (sdaPin == 2 ? BLACK : 0xFD20);
+  uint16_t sclBgColor = (sclPin == 3 ? 0xFD20 : BLACK);
+  gfx->setTextColor(sdaColor, sdaBgColor);
+  gfx->setCursor(textX, textY + (textYplus * y++));
+  gfx->println(sdaPin == 2 ? "SDA" : "SCL");
+
+  gfx->setTextColor(sclColor, sclBgColor);
+  gfx->setCursor(textX, textY + (textYplus * y++));
+  gfx->println(sclPin == 3 ? "SCL" : "SDA");
+
+  // 重置文本旋转为正常
+  gfx->setRotation(0);
 }

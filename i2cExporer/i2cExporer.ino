@@ -36,6 +36,9 @@ const int upperLimit = 250; // 亮度上限
 
 #include "SoftwareI2C.h"
 SoftwareI2C softwarei2c;
+// 定义SDA和SCL引脚号
+int sdaPin = PICO_ONBORAD_SDA;
+int sclPin = PICO_ONBORAD_SCL;
 
 
 void setup() {
@@ -46,7 +49,7 @@ void setup() {
   //Wire1.setSDA(PICO_ONBORAD_SDA);
   //Wire1.setSCL(PICO_ONBORAD_SCL);
   //Wire1.begin();
-  softwarei2c.begin(PICO_ONBORAD_SDA, PICO_ONBORAD_SCL);       // sda, scl
+  softwarei2c.begin(sdaPin, sclPin);       // sda, scl
   Serial.println("begin to scan...");
 
   pinMode(PICO_ONBORAD_LED, OUTPUT);

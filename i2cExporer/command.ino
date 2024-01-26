@@ -20,6 +20,8 @@ void cmdParse() {
         scanRegisters(command);
       } else if (command.startsWith("c ")) {
         connectI2C(command);
+      } else if (command.startsWith("s")) {
+        swapI2CPins();
       } else {
         Serial.println("Error: Invalid command");
       }
