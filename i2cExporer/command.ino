@@ -50,6 +50,7 @@ void cmdParse() {
   }
   digitalWrite(PICO_ONBORAD_LED, LOW);
 }
+
 void showHelp(bool isConnected) {
   if (isConnected) {
     Serial.println("");
@@ -64,5 +65,7 @@ void showHelp(bool isConnected) {
     Serial.println("  scana - Scan for all I2C devices");
     Serial.println("  scanr [address] - Scan registers at [address]");
     Serial.println("  c [address] - Connect to I2C device at [address]");
+    Serial.println("  s - Swap SDA and SCL pins if connected incorrectly");
   }
+  Serial.println("  help - Show this help message");
 }

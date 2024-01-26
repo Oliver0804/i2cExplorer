@@ -6,7 +6,10 @@ void swapI2CPins() {
 
   // 重新初始化SoftwareI2C
   softwarei2c.begin(sdaPin, sclPin); // 使用新的引脚重新初始化
-  Serial.println("swapI2CPins");
+  Serial.print("SDA:");
+  Serial.println(sdaPin);
+  Serial.print("SCL:");
+  Serial.println(sclPin);
   gfxDisplayI2cPin(sdaPin,sclPin);
 }
 

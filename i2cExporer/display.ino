@@ -25,7 +25,7 @@ void breathLED() {
 #define MAGENTA  0xF81F
 
 void gfxInit() {
-  Serial.println("Arduino_GFX");
+  //Serial.println("Arduino_GFX");
 #ifdef GFX_EXTRA_PRE_INIT
   GFX_EXTRA_PRE_INIT();
 #endif
@@ -197,7 +197,7 @@ void gfxDisplayI2cPin(int sdaPin, int sclPin) {
 
   // 显示VCC和GND
   gfx->setTextSize(2); // 设置文字大小
-  gfx->setTextColor(RED, GREEN);
+  gfx->setTextColor(RED, BLACK);
   gfx->setCursor(textX, textY + (textYplus * y++)); // 设置文字位置
   gfx->println("VCC");
 
