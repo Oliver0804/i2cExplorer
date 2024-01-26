@@ -195,7 +195,7 @@ void gfxDisplayI2cPin(int sdaPin, int sclPin) {
   // 设置文本旋转为90度
   gfx->setRotation(1);
   int textX = 190;
-  int textY = 80;
+  int textY = 85;
   int textYplus = 17;
   int y = 0;
 

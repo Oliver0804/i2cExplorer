@@ -34,7 +34,9 @@ Ensure that your I2C devices are compatible with the RP2040's voltage levels and
 - Monitor I2C Registers: Continuously read and print values from a specific register at regular intervals.
 - Serial Interface: Communicate with the RP2040 and I2C devices through a serial connection.
 - Swap I2C bus ( SDA & SCL )
-![./pic/swap1.jpeg](./pic/swap1.jpeg)![./pic/swap2.jpeg](./pic/swap2.jpeg)
+![./pic/swap1.jpeg](./pic/swap1.jpeg)
+
+![./pic/swap2.jpeg](./pic/swap2.jpeg)
 
 ## Usage
 ### Command List
@@ -68,7 +70,11 @@ For the m command, the interval is optional (default is 500ms). The maximum allo
 > m 0x1 1000
 > exit
 ```
+## PCB HW(Kicad 7)
+![./pic/hw/programmingPin.png](./pic/hw/programmingPin.png)
 
+![./pic/hw/front.png](./pic/hw/front.png)
+![./pic/hw/back.png](./pic/hw/back.png)
 
 ## Note
 Ensure your RP2040 and I2C devices are correctly connected and configured.
