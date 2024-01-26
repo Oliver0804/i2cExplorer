@@ -1,5 +1,6 @@
 /*
    https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+   https://patorjk.com/software/taag/#p=display&h=3&f=Big&t=%20%20%20%20%20%20%20%20I2C%0AExporer
 */
 #include <Wire.h>
 
@@ -7,12 +8,12 @@
 #define GFX_BL DF_GFX_BL // default backlight pin, you may replace DF_GFX_BL to actual backlight pin
 
 Arduino_DataBus *bus = new Arduino_SWSPI(8 /* DC */, 9 /* CS */, 10 /* SCK */, 11 /* MOSI */, -1 /* MISO */);
-Arduino_GFX *gfx = new Arduino_GC9A01(bus, 12 /* RST */, 0 /* rotation */, true /* IPS */);
+Arduino_GFX *gfx = new Arduino_GC9A01(bus, 12 /* RST */, 2 /* rotation */, true /* IPS */);
 
 int connectedI2CAddress = -1;
 #define PICO_ONBORAD_LED 25
-#define PICO_ONBORAD_SDA 12
-#define PICO_ONBORAD_SCL 13
+#define PICO_ONBORAD_SDA 3
+#define PICO_ONBORAD_SCL 2
 #define PICO_ONBORAD_BTN 22
 #define MAX_I2C_DEVICES 128
 
@@ -33,15 +34,21 @@ const int interval = 1500; // 完整呼吸周期（毫秒）
 const int lowerLimit = 20;  // 亮度下限
 const int upperLimit = 250; // 亮度上限
 
+#include "SoftwareI2C.h"
+SoftwareI2C softwarei2c;
+
 
 void setup() {
   Serial.begin(230400);
-  //while (!Serial) continue;
+  while (!Serial) continue;
   gfxInit();
   gfxShowLogo();
-  Wire1.setSDA(2);
-  Wire1.setSCL(3);
-  Wire1.begin();
+  //Wire1.setSDA(PICO_ONBORAD_SDA);
+  //Wire1.setSCL(PICO_ONBORAD_SCL);
+  //Wire1.begin();
+  softwarei2c.begin(PICO_ONBORAD_SDA, PICO_ONBORAD_SCL);       // sda, scl
+  Serial.println("begin to scan...");
+
   pinMode(PICO_ONBORAD_LED, OUTPUT);
   pinMode(PICO_ONBORAD_BTN, INPUT_PULLUP);
   digitalWrite(PICO_ONBORAD_LED, HIGH);
@@ -67,10 +74,7 @@ void setup() {
 
 void loop() {
   readBTN();
-
-
   breathLED();
-
   rotatePoint();
   cmdParse();
 }

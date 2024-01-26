@@ -17,21 +17,21 @@ void cmdParse() {
       if (command.equals("scana")) {
         scanAddresses();
       } else if (command.startsWith("scanr")) {
-        scanRegisters(command);
+        //scanRegisters(command);
       } else if (command.startsWith("c ")) {
-        connectI2C(command);
+        //connectI2C(command);
       } else {
         Serial.println("Error: Invalid command");
       }
     } else {
       if (command.startsWith("c ")) {
-        connectI2C(command);
+        //connectI2C(command);
       } else if (command.startsWith("r ")) {
-        readRegister(command);
+        //readRegister(command);
       } else if (command.startsWith("w ")) {
-        writeRegister(command);
+        //writeRegister(command);
       } else if (command.startsWith("m ")) {
-        monitorRegister(command);
+        //monitorRegister(command);
       } else {
         Serial.println("Error: Invalid command or not connected to I2C device");
       }

@@ -1,4 +1,3 @@
-
 void scanAddresses() {
   Serial.println("Scanning for I2C devices...");
   Serial.println("    0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
@@ -24,10 +23,8 @@ void scanAddresses() {
         continue;
       }
 
-      Wire1.beginTransmission(address);
-      error = Wire1.endTransmission();
-
-      if (error == 0) {
+      error = softwarei2c.beginTransmission(address);
+      if (error == 1) {
         if (address < 16) {
           Serial.print("0");
         }
@@ -36,6 +33,7 @@ void scanAddresses() {
       } else {
         Serial.print("--");
       }
+      softwarei2c.endTransmission();
       Serial.print(" ");
     }
     digitalWrite(PICO_ONBORAD_LED, LOW);
@@ -44,11 +42,11 @@ void scanAddresses() {
   }
   gfxShowi2c();
 }
-
+/*
 void connectI2C(String command) {
   int address = strtol(&command.c_str()[2], NULL, 16);
-  Wire1.beginTransmission(address);
-  if (Wire1.endTransmission() == 0) {
+  scanI2C.beginTransmission(address);
+  if (scanI2C.endTransmission() == 0) {
     connectedI2CAddress = address;
     Serial.print("Connected to I2C device at 0x");
     Serial.println(address, HEX);
@@ -59,13 +57,13 @@ void connectI2C(String command) {
 
 void readRegister(String command) {
   int reg = strtol(&command.c_str()[2], NULL, 16);
-  Wire1.beginTransmission(connectedI2CAddress);
-  Wire1.write(reg);
-  Wire1.endTransmission();
+  scanI2C.beginTransmission(connectedI2CAddress);
+  scanI2C.write(reg);
+  scanI2C.endTransmission();
 
-  Wire1.requestFrom(connectedI2CAddress, 1);
-  if (Wire1.available()) {
-    byte data = Wire1.read();
+  scanI2C.requestFrom(connectedI2CAddress, 1);
+  if (scanI2C.available()) {
+    byte data = scanI2C.read();
     Serial.print("Data at 0x");
     Serial.print(reg, HEX);
     Serial.print(": 0x");
@@ -81,10 +79,10 @@ void writeRegister(String command) {
   int nextSpaceIndex = command.indexOf(' ', spaceIndex + 1);
   int data = strtol(&command.c_str()[nextSpaceIndex + 1], NULL, 16);
 
-  Wire1.beginTransmission(connectedI2CAddress);
-  Wire1.write(reg);  // 寄存器地址
-  Wire1.write(data); // 寫數據
-  byte error = Wire1.endTransmission();
+  scanI2C.beginTransmission(connectedI2CAddress);
+  scanI2C.write(reg);  // 寄存器地址
+  scanI2C.write(data); // 寫數據
+  byte error = scanI2C.endTransmission();
 
   if (error == 0) {
     Serial.print("Data 0x");
@@ -103,25 +101,25 @@ void scanRegisters(String command) {
   Serial.print("Scanning registers for device at 0x");
   Serial.println(address, HEX);
 
-  Wire1.beginTransmission(address);
-  if (Wire1.endTransmission() != 0) {
+  scanI2C.beginTransmission(address);
+  if (scanI2C.endTransmission() != 0) {
     Serial.println("Error: Could not connect to I2C device");
     return;
   }
 
 
   for (unsigned int reg = 0; reg <= 0xFF; reg++) {
-    Wire1.beginTransmission(address);
-    Wire1.write(reg);
-    if (Wire1.endTransmission() != 0) {
+    scanI2C.beginTransmission(address);
+    scanI2C.write(reg);
+    if (scanI2C.endTransmission() != 0) {
       continue;
     }
 
-    Wire1.requestFrom(address, 1);
-    if (Wire1.available()) {
+    scanI2C.requestFrom(address, 1);
+    if (scanI2C.available()) {
       digitalWrite(PICO_ONBORAD_LED, HIGH);
 
-      byte data = Wire1.read();
+      byte data = scanI2C.read();
       Serial.print("0x");
       Serial.print(reg, HEX);
       Serial.print(": 0x");
@@ -157,12 +155,12 @@ void monitorRegister(String command) {
   Serial.println(" ms. Enter any character to stop.");
 
   while (!Serial.available()) {
-    Wire1.beginTransmission(connectedI2CAddress);
-    Wire1.write(reg);
-    Wire1.endTransmission();
-    Wire1.requestFrom(connectedI2CAddress, 1);
-    if (Wire1.available()) {
-      byte data = Wire1.read();
+    scanI2C.beginTransmission(connectedI2CAddress);
+    scanI2C.write(reg);
+    scanI2C.endTransmission();
+    scanI2C.requestFrom(connectedI2CAddress, 1);
+    if (scanI2C.available()) {
+      byte data = scanI2C.read();
       //Serial.print("0x");
       //Serial.print(reg, HEX);
       //Serial.print(": 0x");
@@ -180,4 +178,4 @@ void monitorRegister(String command) {
   while (Serial.available()) {
     Serial.read();
   }
-}
+  */
