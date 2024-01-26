@@ -249,7 +249,7 @@
 
   (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 03137200-7fa0-4d26-a829-b048419f4e41)
-    (at 14.3256 -8.128)
+    (at 16.6116 -9.652)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -266,7 +266,7 @@
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp aa2402e4-0c37-4c65-9f22-38064cf3415a)
     )
-    (fp_text user "${REFERENCE}" (at 0 0) (layer "F.Fab")
+    (fp_text user "${REFERENCE}" (at -0.3556 -0.1524) (layer "F.Fab")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 5c89b4df-b842-40f8-a7e7-e7a8e4ddb7d5)
     )
@@ -279,7 +279,7 @@
 
   (footprint "Button_Switch_SMD:Panasonic_EVQPUM_EVQPUD" (layer "F.Cu")
     (tstamp 0325c2e5-71db-489c-965a-b116e9ec1157)
-    (at -9.466812 -14.068424 35)
+    (at -10.722623 -15.586866 35)
     (descr "http://industrial.panasonic.com/cdbs/www-data/pdf/ATV0000/ATV0000CE5.pdf")
     (tags "SMD SMT SPST EVQPUM EVQPUD")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -351,7 +351,7 @@
 
   (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 0a168228-7450-426e-bc15-311b32c5f43c)
-    (at -14.4272 7.9756)
+    (at -16.256 8.8392)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -439,7 +439,7 @@
 
   (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp 0eebcffc-0d62-434e-9ff8-2e459539ddab)
-    (at -14.6812 -7.5692)
+    (at -16.3068 -8.8392)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -523,7 +523,7 @@
 
   (footprint "Package_SO:SOIC-8_5.23x5.23mm_P1.27mm" (layer "F.Cu")
     (tstamp 237bf763-1d99-4028-833e-e692de7f8b56)
-    (at 0.3556 8.5852 180)
+    (at 0.1016 10.7188 180)
     (descr "SOIC, 8 Pin (http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf#page=68), generated with kicad-footprint-generator ipc_gullwing_generator.py")
     (tags "SOIC SO")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -596,7 +596,7 @@
       (net 98 "unconnected-(U2-IO3-Pad7)") (pinfunction "IO3") (pintype "bidirectional") (tstamp d2042229-e5dc-4a87-a3f3-44160ae52733))
     (pad "8" smd roundrect (at 3.6 -1.905 180) (size 1.6 0.6) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
       (net 99 "unconnected-(U2-VCC-Pad8)") (pinfunction "VCC") (pintype "power_in") (tstamp 5d16da9b-62b1-4d01-9d6c-28b87d96f61d))
-    (model "${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_5.23x5.23mm_P1.27mm.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_5.275x5.275mm_P1.27mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -605,7 +605,7 @@
 
   (footprint "Button_Switch_SMD:Panasonic_EVQPUM_EVQPUD" (layer "F.Cu")
     (tstamp 68c46741-acc9-4f3a-8bb6-45892a661722)
-    (at 0 15.5922 180)
+    (at 0 18.9958 180)
     (descr "http://industrial.panasonic.com/cdbs/www-data/pdf/ATV0000/ATV0000CE5.pdf")
     (tags "SMD SMT SPST EVQPUM EVQPUD")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -1033,7 +1033,7 @@
 
   (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu")
     (tstamp dccba481-e648-473f-a53d-3e9ecd7f66a4)
-    (at 14.4272 8.0264)
+    (at 16.1544 8.0772)
     (descr "Mounting Hole 2.2mm, no annular, M2")
     (tags "mounting hole 2.2mm no annular m2")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -1120,7 +1120,7 @@
       (net 108 "unconnected-(Y1-Pad2)") (pinfunction "2") (pintype "passive") (tstamp fb538b2e-6ed0-4c6c-96ca-4e55ba6c1632))
     (pad "3" smd rect (at 0.875 -0.7 180) (size 1.15 1) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 8713f1ff-199b-4040-bdc0-4ef8cfe24a02))
     (pad "4" smd rect (at -0.875 -0.7 180) (size 1.15 1) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 1e352313-8223-4c85-8263-01c0e7509b0b))
-    (model "${KICAD6_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_2520-4Pin_2.5x2.0mm.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_Abracon_ABM8G-4Pin_3.2x2.5mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1129,7 +1129,7 @@
 
   (footprint "Button_Switch_SMD:Panasonic_EVQPUM_EVQPUD" (layer "F.Cu")
     (tstamp e032a0fc-9825-4851-9361-5069aea0574f)
-    (at 9.3472 -14.1732 -35)
+    (at 10.742932 -15.586866 -35)
     (descr "http://industrial.panasonic.com/cdbs/www-data/pdf/ATV0000/ATV0000CE5.pdf")
     (tags "SMD SMT SPST EVQPUM EVQPUD")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -1299,7 +1299,7 @@
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Horizontal" (layer "F.Cu")
     (tstamp f817edb0-395c-4cb9-8042-bf30cdfdc7dd)
-    (at 14.3256 -3.8608)
+    (at 16.1544 -3.81)
     (descr "Through hole angled pin header, 1x04, 2.54mm pitch, 6mm pin length, single row")
     (tags "Through hole angled pin header THT 1x04 2.54mm single row")
     (property "Sheetfile" "i2cExplorer.kicad_sch")
@@ -1537,7 +1537,7 @@
     )
   )
 
-  (gr_circle (center 0 0) (end 19 0)
+  (gr_circle (center 0 0) (end 21 0)
     (stroke (width 0.15) (type default)) (fill none) (layer "Edge.Cuts") (tstamp a2292d04-623a-45dd-82cc-214f1af1bf73))
 
 )
